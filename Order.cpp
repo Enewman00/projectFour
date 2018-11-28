@@ -6,7 +6,20 @@
 
 #include <vector>
 
+Order::Order(int a)
+{
+    auditorium = a;
+    std::vector<Seat> seats;
+}
 
+int Order::getAuditorium()
+{
+    return auditorium;
+}
+void Order::setAuditorium(int a)
+{
+    auditorium = a;
+}
 std::vector<Seat> Order::getSeats()
 {
     return seats;

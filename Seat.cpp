@@ -5,6 +5,15 @@
 
 #include <string>
 
+Seat::Seat(char ty, int r, char col)
+{
+    type = ty;
+    row = r;
+    column = col;
+}
+
+
+
 char Seat::getType()
 {
     return type;

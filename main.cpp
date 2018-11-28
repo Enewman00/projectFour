@@ -12,6 +12,7 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include <algorithm>
 
 using namespace std;
 
@@ -43,10 +44,674 @@ int main()
     {
         guesses = 0;
 
-        //user login
-        
+        //user login input
+        string usernameIn;
+        string passwordIn;
+
+        cout << "Enter your username (case sensitive):\n";
+        getline(cin, usernameIn);
+        //valid username
+        while (table.find(usernameIn) == table.end())
+        {
+            cout << "Invalid username, please try again:\n";
+            getline(cin, usernameIn);
+        }
+
+        cout << "Enter your password (case sensitive):\n";
+        getline(cin, passwordIn);
 
 
+        //after three guesse it goes to the beginning
+        while (table.find(usernameIn)->second.getPassword() != passwordIn && guesses != 3)
+        {
+            cout << "Incorrect Password. Please Try again:\n";
+            getline(cin, passwordIn);
+            guesses++;
+        }
+
+        bool exit2 = false;
+        //skips if 3 guesses, goes back to beginning
+        while (exit2 == false && guesses != 3)
+        {
+            //if user is admin
+            if (usernameIn == "admin")
+            {
+                //print modified main menu
+                cout << "1. Print Report\n2. Logout\n3. Exit\n";
+                string adminMM;
+                getline(cin, adminMM);
+
+                //input validation
+                while (adminMM != "1" && adminMM != "2" && adminMM != "3")
+                {
+                    cout << "invalid input, please try again\n";
+                    getline(cin, adminMM);
+                }
+                //report
+                if (adminMM == "1")
+                    displayReport(theater1, theater2, theater3);
+                //logout
+                else if (adminMM == "2")
+                {
+                    exit1 = false;
+                    exit2 = true;
+                }
+                //exit
+                else
+                {
+                    theater1.writeToFile("A1.txt");
+                    theater2.writeToFile("A2.txt");
+                    theater2.writeToFile("A3.txt");
+                    exit(0);
+                }
+            }
+
+            //user is not admin
+            else
+            {
+                //print normal main menu
+                cout << "1. Reserve Seats\n2. View Orders\n3. Update Orders\n4. Display Receipt\n5. Log Out\n";
+                string regularMM;
+                getline(cin, regularMM);
+
+                //input validation
+                while (regularMM != "1" && regularMM != "2" && regularMM != "3" && regularMM != "4" && regularMM != "5")
+                {
+                    cout << "invalid input, please try again\n";
+                    getline(cin, regularMM);
+                }
+
+                //reserve seats
+                if (regularMM == "1")
+                {
+                    //user input
+                    string audChoice;
+                    cout << "1. Auditorium 1\n2. Auditorium 2\n3. Auditorium 3\n";
+                    getline(cin, audChoice);
+
+                    //input validation
+                    while (audChoice != "1" && audChoice != "2" && audChoice != "3")
+                    {
+                        cout << "invalid input, please try again\n";
+                        getline(cin, audChoice);
+                    }
+
+                    int rows, columns;
+                    //if auditorium 1 chosen
+                    if (audChoice == "1")
+                    {
+                        theater1.printAuditorium();
+                        rows = theater1.getRows();
+                        columns = theater1.getColumns();
+                    }
+                    else if (audChoice == "2")
+                    {
+                        theater2.printAuditorium();
+                        rows = theater2.getRows();
+                        columns = theater2.getColumns();
+                    }
+                    else
+                    {
+                        theater3.printAuditorium();
+                        rows = theater3.getRows();
+                        columns = theater3.getColumns();
+                    }
+
+
+                    //user input for row, seat, tickets
+                    //input of row number, column number (seat letter), and amount of people
+                    string r, c, sen, adu, chi;
+                    int row, column;
+
+                    //row input
+                    cout << "Enter the row number: ";
+                    getline(cin, r);
+                    //input validation loop for checkAvailability
+                    while (atoi(r.c_str()) > rows ||  atoi(r.c_str()) < 1 || r.find_first_not_of("0123456789") != string::npos)
+                    {
+                        cout << "Sorry, row does not exist. Please try input again.\n";
+                        getline(cin, r);
+                    }
+                    row = atoi(r.c_str());
+
+
+                    //seat input
+                    cout << "Enter the starting seat letter: ";
+                    getline(cin, c);
+                    //converts seat letter to upper so it can search index in alphabet for it.
+                    transform(c.begin(), c.end(), c.begin(), ::toupper);
+
+                    //input validation loop
+                    while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0)
+                    {
+                        cout << "Sorry, seat does not exist. Please try input again.\n";
+                        getline(cin, c);
+                        //uppercase
+                        transform(c.begin(), c.end(), c.begin(), ::toupper);
+                    }
+                    column = columnToIndex(c[0]);
+
+
+                    //adult ticket amount input
+                    cout << "Enter the number of Adult tickets: ";
+                    getline(cin, adu);
+                    //input validation loops
+                    while (atoi(adu.c_str()) + column > columns || atoi(adu.c_str()) < 0 || adu.find_first_not_of("0123456789") != string::npos)
+                    {
+                        cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                        getline(cin, adu);
+                    }
+                    int adult = atoi(adu.c_str());
+
+
+                    //child ticket amount input.
+                    cout << "Enter the number of Child tickets: ";
+                    getline(cin, chi);
+                    //input validation loops
+                    while (atoi(chi.c_str()) + adult + column > columns || atoi(chi.c_str()) < 0 || chi.find_first_not_of("0123456789") != string::npos)
+                    {
+                        cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                        getline(cin, chi);
+                    }
+                    int child = atoi(chi.c_str());
+
+
+                    //senior ticket amount input
+                    cout << "Enter the number of Senior tickets: ";
+                    getline(cin, sen);
+                    //input validation loop
+                    while (atoi(sen.c_str()) + child + adult + column > columns || atoi(sen.c_str()) < 0 || sen.find_first_not_of("0123456789") != string::npos)
+                    {
+                        cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                        getline(cin, sen);
+                    }
+                    int senior = atoi(sen.c_str());
+                    int quantity = senior + adult + child;  //makes it a little easier for checkAvailability
+
+
+                    //if in theater 1
+                    if (audChoice == "1")
+                    {
+                        if (theater1.isAvailable(row - 1, column, quantity))
+                        {
+                            //then reserve those seats.
+                            theater1.reserveSeats(row - 1, column, adult, senior, child);
+                            cout << "\nSeats have been reserved!\n";
+                        }
+                        else
+                        {
+                            cout << "\nSeats were not available\n";
+                            //find best available
+                            pair<int, int> best = theater1.bestAvailable(quantity);
+
+                            //if it didn't change the best available
+                            if (best.first == -1)
+                                cout << "No best seats are available in this row.\n";
+                            //bestAvailable found
+                            else
+                            {
+                                cout << "Those seats are not open. The next best seats are ";
+                                //output next best
+                                for (int i = 0; i < quantity; i++)
+                                    cout << best.first << indexToColumn(best.second) << ", ";
+                                cout << "\n\n";
+
+
+                                string reserveConfirmation;
+                                cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                getline(cin, reserveConfirmation);
+
+                                //input validation loop for confirming the reservation of the next best seats
+                                while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                {
+                                    cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                    getline(cin, reserveConfirmation);
+                                }
+
+                                if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                    theater1.reserveSeats(best.first, best.second, adult, child, senior);
+
+
+                            }
+
+                        }
+                    }//end of aud1
+                    else if (audChoice == "2")
+                    {
+                        if (theater2.isAvailable(row - 1, column, quantity))
+                        {
+                            //then reserve those seats.
+                            theater2.reserveSeats(row - 1, column, adult, senior, child);
+                            cout << "\nSeats have been reserved!\n";
+                        }
+                        else
+                        {
+                            cout << "\nSeats were not available\n";
+                            //find best available
+                            pair<int, int> best = theater2.bestAvailable(quantity);
+
+                            //if it didn't change the best available
+                            if (best.first == -1)
+                                cout << "No best seats are available in this row.\n";
+                            //bestAvailable found
+                            else
+                            {
+                                cout << "Those seats are not open. The next best seats are ";
+                                //output next best
+                                for (int i = 0; i < quantity; i++)
+                                    cout << best.first << indexToColumn(best.second) << ", ";
+                                cout << "\n\n";
+
+
+                                string reserveConfirmation;
+                                cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                getline(cin, reserveConfirmation);
+
+                                //input validation loop for confirming the reservation of the next best seats
+                                while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                {
+                                    cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                    getline(cin, reserveConfirmation);
+                                }
+
+                                if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                    theater2.reserveSeats(best.first, best.second, adult, child, senior);
+                            }
+
+                        }
+                    }//end of aud2
+                    else
+                    {
+                        if (theater3.isAvailable(row - 1, column, quantity))
+                        {
+                            //then reserve those seats.
+                            theater3.reserveSeats(row - 1, column, adult, senior, child);
+                            cout << "\nSeats have been reserved!\n";
+                        }
+                        else
+                        {
+                            cout << "\nSeats were not available\n";
+                            //find best available
+                            pair<int, int> best = theater3.bestAvailable(quantity);
+
+                            //if it didn't change the best available
+                            if (best.first == -1)
+                                cout << "No best seats are available in this row.\n";
+                            //bestAvailable found
+                            else
+                            {
+                                cout << "Those seats are not open. The next best seats are ";
+                                //output next best
+                                for (int i = 0; i < quantity; i++)
+                                    cout << best.first << indexToColumn(best.second) << ", ";
+                                cout << "\n\n";
+
+
+                                string reserveConfirmation;
+                                cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                getline(cin, reserveConfirmation);
+
+                                //input validation loop for confirming the reservation of the next best seats
+                                while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                {
+                                    cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                    getline(cin, reserveConfirmation);
+                                }
+
+                                if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                    theater3.reserveSeats(best.first, best.second, adult, child, senior);
+
+
+                            }
+
+                        }
+                    }//end of aud3
+
+
+
+                }
+                //view orders
+                else if (regularMM == "2")
+                {
+                    table.find(usernameIn)->second.viewOrders();
+                }
+                //updateOrders
+                else if (regularMM == "3")
+                {
+                    string updateIn;
+                    table.find(usernameIn)->second.viewOrders();
+
+                    cout << "Enter the order to be updated: \n";
+                    getline(cin, updateIn);
+
+                    //vector of users orders
+                    vector<Order> orders = table.find(usernameIn)->second.getOrders();
+
+                    //input validation
+                    while (updateIn.find_first_not_of("0123456789") != string::npos || atoi(updateIn.c_str()) > (int) table.find(usernameIn)->second.getOrders().size() - 1 || atoi(updateIn.c_str()) <= 0)
+                    {
+                        cout << "Invalid input, please try again: \n";
+                        getline(cin, updateIn);
+                    }
+                    int userInt = atoi(updateIn.c_str());
+
+                    Order chosenOrder = orders[userInt - 1];
+
+                    //user input for what to do with the order (add, delete, or cancel)
+                    string orderMM;
+                    cout << "1. Add tickets to order\n2. Delete tickets from order\n3. Cancel Order\n";
+                    getline(cin, orderMM);
+
+                    while (orderMM != "1" && orderMM != "2" && orderMM != "3")
+                    {
+                        cout << "invalid input, please try again";
+                        getline(cin, orderMM);
+                    }
+
+
+                    if (orderMM == "1") //add tickets
+                    {
+                        //reserve again
+                        //already know auditorium
+                        int orderAud = chosenOrder.getAuditorium();
+
+                        int rows, columns;
+                        //if auditorium 1 chosen
+                        if (orderAud == 1)
+                        {
+                            theater1.printAuditorium();
+                            rows = theater1.getRows();
+                            columns = theater1.getColumns();
+                        }
+                        else if (orderAud == 2)
+                        {
+                            theater2.printAuditorium();
+                            rows = theater2.getRows();
+                            columns = theater2.getColumns();
+                        }
+                        else //3 auditorium
+                        {
+                            theater3.printAuditorium();
+                            rows = theater3.getRows();
+                            columns = theater3.getColumns();
+                        }
+
+
+                        //user input for row, seat, tickets
+                        //input of row number, column number (seat letter), and amount of people
+                        string r, c, sen, adu, chi;
+                        int row, column;
+
+                        //row input
+                        cout << "Enter the row number: ";
+                        getline(cin, r);
+                        //input validation loop for checkAvailability
+                        while (atoi(r.c_str()) > rows ||  atoi(r.c_str()) < 1 || r.find_first_not_of("0123456789") != string::npos)
+                        {
+                            cout << "Sorry, row does not exist. Please try input again.\n";
+                            getline(cin, r);
+                        }
+                        row = atoi(r.c_str());
+
+
+                        //seat input
+                        cout << "Enter the starting seat letter: ";
+                        getline(cin, c);
+                        //converts seat letter to upper so it can search index in alphabet for it.
+                        transform(c.begin(), c.end(), c.begin(), ::toupper);
+
+                        //input validation loop
+                        while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0)
+                        {
+                            cout << "Sorry, seat does not exist. Please try input again.\n";
+                            getline(cin, c);
+                            //uppercase
+                            transform(c.begin(), c.end(), c.begin(), ::toupper);
+                        }
+                        column = columnToIndex(c[0]);
+
+
+                        //adult ticket amount input
+                        cout << "Enter the number of Adult tickets: ";
+                        getline(cin, adu);
+                        //input validation loops
+                        while (atoi(adu.c_str()) + column > columns || atoi(adu.c_str()) < 0 || adu.find_first_not_of("0123456789") != string::npos)
+                        {
+                            cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                            getline(cin, adu);
+                        }
+                        int adult = atoi(adu.c_str());
+
+
+                        //child ticket amount input.
+                        cout << "Enter the number of Child tickets: ";
+                        getline(cin, chi);
+                        //input validation loops
+                        while (atoi(chi.c_str()) + adult + column > columns || atoi(chi.c_str()) < 0 || chi.find_first_not_of("0123456789") != string::npos)
+                        {
+                            cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                            getline(cin, chi);
+                        }
+                        int child = atoi(chi.c_str());
+
+
+                        //senior ticket amount input
+                        cout << "Enter the number of Senior tickets: ";
+                        getline(cin, sen);
+                        //input validation loop
+                        while (atoi(sen.c_str()) + child + adult + column > columns || atoi(sen.c_str()) < 0 || sen.find_first_not_of("0123456789") != string::npos)
+                        {
+                            cout << "Sorry, seats do not exist in row. Please try input again.\n";
+                            getline(cin, sen);
+                        }
+                        int senior = atoi(sen.c_str());
+                        int quantity = senior + adult + child;  //makes it a little easier for checkAvailability
+                        //if in theater 1
+                        if (orderAud == 1)
+                        {
+                            if (theater1.isAvailable(row - 1, column, quantity))
+                            {
+                                //then reserve those seats.
+                                theater1.reserveSeats(row - 1, column, adult, senior, child);
+                                cout << "\nSeats have been reserved!\n";
+                            }
+                            else
+                            {
+                                cout << "\nSeats were not available\n";
+                                //find best available
+                                pair<int, int> best = theater1.bestAvailable(quantity);
+
+                                //if it didn't change the best available
+                                if (best.first == -1)
+                                    cout << "No best seats are available in this row.\n";
+                                //bestAvailable found
+                                else
+                                {
+                                    cout << "Those seats are not open. The next best seats are ";
+                                    //output next best
+                                    for (int i = 0; i < quantity; i++)
+                                        cout << best.first << indexToColumn(best.second) << ", ";
+                                    cout << "\n\n";
+
+
+                                    string reserveConfirmation;
+                                    cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                    getline(cin, reserveConfirmation);
+
+                                    //input validation loop for confirming the reservation of the next best seats
+                                    while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                    {
+                                        cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                        getline(cin, reserveConfirmation);
+                                    }
+
+                                    if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                        theater1.reserveSeats(best.first, best.second, adult, child, senior);
+
+
+                                }
+
+                            }
+                        }//end of aud1
+                        else if (orderAud == 2)
+                        {
+                            if (theater2.isAvailable(row - 1, column, quantity))
+                            {
+                                //then reserve those seats.
+                                theater2.reserveSeats(row - 1, column, adult, senior, child);
+                                cout << "\nSeats have been reserved!\n";
+                            }
+                            else
+                            {
+                                cout << "\nSeats were not available\n";
+                                //find best available
+                                pair<int, int> best = theater2.bestAvailable(quantity);
+
+                                //if it didn't change the best available
+                                if (best.first == -1)
+                                    cout << "No best seats are available in this row.\n";
+                                //bestAvailable found
+                                else
+                                {
+                                    cout << "Those seats are not open. The next best seats are ";
+                                    //output next best
+                                    for (int i = 0; i < quantity; i++)
+                                        cout << best.first << indexToColumn(best.second) << ", ";
+                                    cout << "\n\n";
+
+
+                                    string reserveConfirmation;
+                                    cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                    getline(cin, reserveConfirmation);
+
+                                    //input validation loop for confirming the reservation of the next best seats
+                                    while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                    {
+                                        cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                        getline(cin, reserveConfirmation);
+                                    }
+
+                                    if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                        theater2.reserveSeats(best.first, best.second, adult, child, senior);
+                                }
+
+                            }
+                        }//end of aud2
+                        else
+                        {
+                            if (theater3.isAvailable(row - 1, column, quantity))
+                            {
+                                //then reserve those seats.
+                                theater3.reserveSeats(row - 1, column, adult, senior, child);
+                                cout << "\nSeats have been reserved!\n";
+                            }
+                            else
+                            {
+                                cout << "\nSeats were not available\n";
+                                //find best available
+                                pair<int, int> best = theater3.bestAvailable(quantity);
+
+                                //if it didn't change the best available
+                                if (best.first == -1)
+                                    cout << "No best seats are available in this row.\n";
+                                //bestAvailable found
+                                else
+                                {
+                                    cout << "Those seats are not open. The next best seats are ";
+                                    //output next best
+                                    for (int i = 0; i < quantity; i++)
+                                        cout << best.first << indexToColumn(best.second) << ", ";
+                                    cout << "\n\n";
+
+
+                                    string reserveConfirmation;
+                                    cout << "Would you like to reserve the seats listed above? (y/n)\n";
+                                    getline(cin, reserveConfirmation);
+
+                                    //input validation loop for confirming the reservation of the next best seats
+                                    while (reserveConfirmation != "y" && reserveConfirmation != "Y" && reserveConfirmation != "N" && reserveConfirmation != "n")
+                                    {
+                                        cout << "Sorry, input was not 'y' or 'n'. Please try input again.\n";
+                                        getline(cin, reserveConfirmation);
+                                    }
+
+                                    if (reserveConfirmation == "Y" || reserveConfirmation == "y")
+                                        theater3.reserveSeats(best.first, best.second, adult, child, senior);
+
+
+                                }
+
+                            }
+                        }//end of aud3
+
+
+
+
+
+                    }
+                    else if (orderMM == "2")    //delete Tickets from order
+                    {
+                        //ask fro row and seat, verify, unreserve and delete from order
+//TODO: search in order for the seat using the row and column given
+//find what seat that is and hang on to it's index in the vector
+//at the end, seats.erase(index);
+                        string rowIn, columnIn;
+                        cout << "enter the row to be deleted: \n";
+                        getline(cin, rowIn);
+
+                        //input validation
+                        while (atoi(rowIn.c_str()) > rows ||  atoi(rowIn.c_str()) < 1 || rowIn.find_first_not_of("0123456789") != string::npos)
+                        {
+                            cout << "Sorry, row does not exist. Please try input again.\n";
+                            getline(cin, r);
+                        }
+                        row = atoi(r.c_str()) - 1;
+
+
+                        cout << "enter the seat letter to be deleted: \n";
+                        getline(cin, columnIn);
+                        //converts seat letter to upper so it can search index in alphabet for it.
+                        transform(columnIn.begin(), columnIn.end(), columnIn.begin(), ::toupper);
+
+                        //input validation loop
+                        while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0)
+                        {
+                            cout << "Sorry, seat does not exist. Please try input again.\n";
+                            getline(cin, c);
+                            //uppercase
+                            transform(c.begin(), c.end(), c.begin(), ::toupper);
+                        }
+                        column = columnToIndex(c[0]);
+
+
+                        auditorium[row][column] = '.';
+                        //delete from
+
+                    }
+                    else if (orderMM == "3")    //Cancel order
+                    {
+                        //unreserve all seats in order, delete the order from the vector of orders
+                    }
+
+                    //order chosen by user
+                    Order chosen = orders[userInt - 1];
+
+
+
+
+                }
+                //display Receipt
+                else if (regularMM == "4")
+                {
+
+                }
+                else if (regularMM == "5")  //log out
+                {
+                    exit1 = false;
+                    exit2 = true;
+                }
+            }
+        }
     }
 
 
@@ -83,7 +748,7 @@ int main()
     theater1.writeToFile("A1.txt");
     theater2.writeToFile("A2.txt");
     theater2.writeToFile("A3.txt");
-    writeTableToFile(table);
+    //writeTableToFile(table);
 
     return 0;
 }

@@ -9,11 +9,15 @@
 class Seat
 {
 private:
+
     char type;
     int row;
     char column;
 
 public:
+
+    Seat(char, int, char);
+
     char getType();
     void setType(char);
 

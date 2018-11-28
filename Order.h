@@ -13,9 +13,14 @@ class Order
 {
 private:
     std::vector<Seat> seats;
+    int auditorium;
 
 
 public:
+    Order(int);
+
+    int getAuditorium();
+    void setAuditorium(int a);
 
     std::vector<Seat> getSeats();
     void setSeats(std::vector<Seat>);

@@ -34,6 +34,8 @@ public:
 
     void addOrder(Order);
 
+    void viewOrders();
+
 };
 
 

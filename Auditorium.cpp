@@ -204,7 +204,7 @@ std::pair<int, int> Auditorium::bestAvailable(int customerQuantity)
     std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //used to locate column
     int distance            = rows + columns;
     bool available          = true;
-    std::pair<int, int> startingSeat(0, 0); //the seat it returns
+    std::pair<int, int> startingSeat(-1, -1); //the seat it returns
 
     //loop through 2d array
     for (int r = 0; r < rows; r++)
