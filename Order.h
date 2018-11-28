@@ -29,6 +29,7 @@ public:
 
 
     void addSeat(Seat);
+    void removeSeat(int);
 
 
 

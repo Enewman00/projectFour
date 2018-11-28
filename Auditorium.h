@@ -4,6 +4,9 @@
 #ifndef AUDITORIUM_H
 #define AUDITORIUM_H
 
+#include "Customer.h"
+#include "Order.h"
+
 #include <string>
 #include <vector>
 
@@ -13,13 +16,14 @@ private:
     int rows;
     int columns;
     char auditorium[30][26];
+    int number;
 
 
 
 
 public:
 
-    Auditorium(std::string);
+    Auditorium(std::string, int);
 
 
     int getRows();
@@ -32,7 +36,9 @@ public:
     void printAuditorium();
     void writeToFile(std::string);
     bool isAvailable(int, int, int);
-    void reserveSeats(int, int, int, int, int);
+    void reserveSeats(int, int, int, int, int, bool, Customer);
+    void reserveSeats(int, int, int, int, int, bool, Order);
+    void setEmpty(int, int, int);
     std::vector<int> printReport();
     std::pair<int, int> bestAvailable(int);
 

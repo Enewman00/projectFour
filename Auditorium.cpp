@@ -2,6 +2,9 @@
 //EEN170000
 
 #include "Auditorium.h"
+#include "Customer.h"
+#include "Order.h"
+#include "Seat.h"
 
 #include <string>
 #include <fstream>
@@ -9,8 +12,9 @@
 #include <iomanip>
 #include <vector>
 
-Auditorium::Auditorium(std::string fn)
+Auditorium::Auditorium(std::string fn, int num)
 {
+    number  = num;
     rows    = 0;
     columns = 0;
 
@@ -106,7 +110,7 @@ bool Auditorium::isAvailable(int r, int c, int q)
     return true;
 }
 
-void Auditorium::reserveSeats(int row, int column, int adult, int child, int senior)
+void Auditorium::reserveSeats(int row, int column, int adult, int child, int senior, bool newOrder, Customer current)
 {
     //edit 2d array
     //runs
@@ -135,7 +139,123 @@ void Auditorium::reserveSeats(int row, int column, int adult, int child, int sen
             senior--;
         }
     }
+
+
+    std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    //if it is a new order, create and add a new order to the customer
+    if (newOrder)
+    {
+        //need to pass in the auditorium number as well?
+        Order orderCreated(number);
+        for (int i = 0; i < total; i++)
+        {
+            if (adult > 0)
+            {
+                Seat newSeat('A', row, alphabet[column + i]);
+                adult--;
+                orderCreated.addSeat(newSeat);
+            }
+            else if (child > 0)
+            {
+                Seat newSeat('C', row, alphabet[column + i]);
+                child--;
+                orderCreated.addSeat(newSeat);
+            }
+            else
+            {
+                Seat newSeat('S', row, alphabet[column + i]);
+                senior--;
+                orderCreated.addSeat(newSeat);
+            }
+        }
+        current.addOrder(orderCreated);
+    }
+    if (!newOrder)
+    {
+        std::cout << "Something went wrong with adding the tickets to the order object when you reserve seats\n";
+    }
+
+    //if it's not a new order, don't - do it in the main, get the Customer and
 }
+
+
+
+//if it's not a new order you are adding tickets to an old order. We need to be passed the order as well
+void Auditorium::reserveSeats(int row, int column, int adult, int child, int senior, bool newOrder, Order order)
+{
+    //edit 2d array
+    //runs
+    //total amount of ticket bough
+    int total = adult + child + senior;
+
+    //loops through and assigns a ticket to each seat
+    for (int i = 0; i < total; i++)
+    {
+        //if there are still adults to be seated
+        if (adult > 0)
+        {
+            auditorium[row][column + i] = 'A';
+            adult--;
+        }
+        //if there are still children to be seated
+        else if (child > 0)
+        {
+            auditorium[row][column + i] = 'C';
+            child--;
+        }
+        //if there are still seniors to be seated
+        else if (senior > 0)
+        {
+            auditorium[row][column + i] = 'S';
+            senior--;
+        }
+    }
+
+    std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    //if it is not a new order, create and add a new order to the customer
+    if (newOrder)
+    {
+        std::cout << "Something went wrong with adding the tickets to the order object when you reserve seats\n";
+    }
+    if (!newOrder)
+    {
+        for (int i = 0; i < total; i++)
+        {
+            if (adult > 0)
+            {
+                Seat newSeat('A', row, alphabet[column + i]);
+                adult--;
+                order.addSeat(newSeat);
+            }
+            else if (child > 0)
+            {
+                Seat newSeat('C', row, alphabet[column + i]);
+                child--;
+                order.addSeat(newSeat);
+            }
+            else
+            {
+                Seat newSeat('S', row, alphabet[column + i]);
+                senior--;
+                order.addSeat(newSeat);
+            }
+
+        }
+    }
+
+
+}
+
+
+void Auditorium::setEmpty(int row, int column, int quantity)
+{
+    for (int i = 0; i < quantity; i++)
+        auditorium[row][column + i] = '.';
+}
+
+
 
 std::vector<int> Auditorium::printReport()
 {

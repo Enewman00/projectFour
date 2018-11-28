@@ -33,8 +33,10 @@ public:
     void setOrders(std::vector<Order>);
 
     void addOrder(Order);
+    void removeOrder(int);
 
     void viewOrders();
+    void printReciept();
 
 };
 

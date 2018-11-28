@@ -35,3 +35,8 @@ void Order::addSeat(Seat s)
 {
     seats.push_back(s);
 }
+
+void Order::removeSeat(int s)
+{
+    seats.erase(seats.begin() + s);
+}
