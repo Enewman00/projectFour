@@ -143,6 +143,9 @@ void Auditorium::reserveSeats(int row, int column, int a, int c, int s, bool new
         }
     }
 
+    adult = a;
+    child = c;
+    senior = s;
 
     std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -221,6 +224,10 @@ void Auditorium::reserveSeats(int row, int column, int a, int c, int s, bool new
 
     std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    adult = a;
+    child = c;
+    senior = s;
+
     //if it is not a new order, create and add a new order to the customer
     if (newOrder)
     {
@@ -244,6 +251,7 @@ void Auditorium::reserveSeats(int row, int column, int a, int c, int s, bool new
             }
             else
             {
+
                 Seat newSeat('S', row, alphabet[column + i]);
                 senior--;
                 order->addSeat(newSeat);

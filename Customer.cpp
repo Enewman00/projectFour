@@ -47,6 +47,15 @@ std::vector<Order> Customer::getOrders()
 {
     return orders;
 }
+std::vector<Order>* Customer::getOrdersPointer()
+{
+    return &orders;
+}
+
+Order* Customer::getIndexPointer(int i)
+{
+    return &orders[i];
+}
 
 void Customer::setOrders(std::vector<Order> o)
 {
@@ -95,7 +104,7 @@ void Customer::viewOrders()
             //loop through the seats in the order
             for (int j = 0; j < (int) orders[i].getSeats().size(); j++)
             {
-
+                //all seats[j].getType is returning S
                 if (seats[j].getType() == 'A')
                     adults++;
                 else if (seats[j].getType() == 'C')
@@ -103,7 +112,7 @@ void Customer::viewOrders()
                 else if (seats[j].getType() == 'S')
                     seniors++;
 
-                os << seats[j].getRow() << seats[j].getColumn() << ' ';
+                os << seats[j].getRow() + 1 << seats[j].getColumn() << ' ';
             }
 
             std::cout << std::setw(25) << std::left << os.str();
@@ -158,7 +167,7 @@ void Customer::printReciept()
                 else if (seats[j].getType() == 'S')
                     seniors++;
 
-                os << seats[j].getRow() << seats[j].getColumn() << ' ';
+                os << seats[j].getRow() + 1<< seats[j].getColumn() << ' ';
             }
 
             std::cout << std::setw(25) << std::left << os.str();

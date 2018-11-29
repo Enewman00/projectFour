@@ -30,6 +30,8 @@ public:
     void setPassword(std::string);
 
     std::vector<Order> getOrders();
+    std::vector<Order>* getOrdersPointer();
+    Order* getIndexPointer(int);
     void setOrders(std::vector<Order>);
 
     void addOrder(Order);

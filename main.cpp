@@ -77,7 +77,7 @@ int main()
             if (usernameIn == "admin")
             {
                 //print modified main menu
-                cout << "1. Print Report\n2. Logout\n3. Exit\n";
+                cout << "\n1. Print Report\n2. Logout\n3. Exit\n";
                 string adminMM;
                 getline(cin, adminMM);
 
@@ -110,7 +110,7 @@ int main()
             else
             {
                 //print normal main menu
-                cout << "1. Reserve Seats\n2. View Orders\n3. Update Orders\n4. Display Receipt\n5. Log Out\n";
+                cout << "\n1. Reserve Seats\n2. View Orders\n3. Update Orders\n4. Display Receipt\n5. Log Out\n";
                 string regularMM;
                 getline(cin, regularMM);
 
@@ -126,7 +126,7 @@ int main()
                 {
                     //user input
                     string audChoice;
-                    cout << "1. Auditorium 1\n2. Auditorium 2\n3. Auditorium 3\n";
+                    cout << "\n1. Auditorium 1\n2. Auditorium 2\n3. Auditorium 3\n";
                     getline(cin, audChoice);
 
                     //input validation
@@ -254,7 +254,7 @@ int main()
                                 cout << "Those seats are not open. The next best seats are ";
                                 //output next best
                                 for (int i = 0; i < quantity; i++)
-                                    cout << best.first << indexToColumn(best.second + i) << ", ";
+                                    cout << best.first + 1<< indexToColumn(best.second + i) << ", ";
                                 cout << "\n\n";
 
 
@@ -304,7 +304,7 @@ int main()
                                 cout << "Those seats are not open. The next best seats are ";
                                 //output next best
                                 for (int i = 0; i < quantity; i++)
-                                    cout << best.first << indexToColumn(best.second + i) << ", ";
+                                    cout << best.first + 1 << indexToColumn(best.second + i) << ", ";
                                 cout << "\n\n";
 
 
@@ -353,7 +353,7 @@ int main()
                                 cout << "Those seats are not open. The next best seats are ";
                                 //output next best
                                 for (int i = 0; i < quantity; i++)
-                                    cout << best.first << indexToColumn(best.second + i) << ", ";
+                                    cout << best.first + 1<< indexToColumn(best.second + i) << ", ";
                                 cout << "\n\n";
 
 
@@ -398,8 +398,6 @@ int main()
                         cout << "Enter the order to be updated: \n";
                         getline(cin, updateIn);
 
-                        //vector of users orders
-                        vector<Order> orders = table.find(usernameIn)->second->getOrders();
 
                         //input validation
                         while (updateIn.find_first_not_of("0123456789") != string::npos || atoi(updateIn.c_str()) > (int) table.find(usernameIn)->second->getOrders().size() || atoi(updateIn.c_str()) <= 0)
@@ -409,11 +407,12 @@ int main()
                         }
                         int userInt = atoi(updateIn.c_str());
 
-                        Order chosenOrder = orders[userInt - 1];
+                        Order *chosenOrder = table.find(usernameIn)->second->getIndexPointer(userInt - 1);
+                        // Order *chosenOrder = orders[userInt - 1];
 
                         //user input for what to do with the order (add, delete, or cancel)
                         string orderMM;
-                        cout << "1. Add tickets to order\n2. Delete tickets from order\n3. Cancel Order\n";
+                        cout << "\n1. Add tickets to order\n2. Delete tickets from order\n3. Cancel Order\n";
                         getline(cin, orderMM);
 
                         while (orderMM != "1" && orderMM != "2" && orderMM != "3")
@@ -427,7 +426,7 @@ int main()
                         {
                             //reserve again
                             //already know auditorium
-                            int orderAud = chosenOrder.getAuditorium();
+                            int orderAud = chosenOrder->getAuditorium();
 
                             int rows, columns;
                             //if auditorium 1 chosen
@@ -526,7 +525,7 @@ int main()
                                 if (theater1.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    theater1.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
+                                    theater1.reserveSeats(row - 1, column, adult, child, senior, false, chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -544,7 +543,7 @@ int main()
                                         cout << "Those seats are not open. The next best seats are ";
                                         //output next best
                                         for (int i = 0; i < quantity; i++)
-                                            cout << best.first << indexToColumn(best.second + i) << ", ";
+                                            cout << best.first + 1 << indexToColumn(best.second + i) << ", ";
                                         cout << "\n\n";
 
 
@@ -561,7 +560,7 @@ int main()
 
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            theater1.reserveSeats(best.first, best.second, adult, child, senior, false, &chosenOrder);
+                                            theater1.reserveSeats(best.first, best.second, adult, child, senior, false, chosenOrder);
                                         }
 
                                     }
@@ -573,7 +572,7 @@ int main()
                                 if (theater2.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    theater2.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
+                                    theater2.reserveSeats(row - 1, column, adult, child, senior, false, chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -591,7 +590,7 @@ int main()
                                         cout << "Those seats are not open. The next best seats are ";
                                         //output next best
                                         for (int i = 0; i < quantity; i++)
-                                            cout << best.first << indexToColumn(best.second + i) << ", ";
+                                            cout << best.first + 1<< indexToColumn(best.second + i) << ", ";
                                         cout << "\n\n";
 
 
@@ -608,7 +607,7 @@ int main()
 
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            theater2.reserveSeats(best.first, best.second, adult, child, senior,false, &chosenOrder);
+                                            theater2.reserveSeats(best.first, best.second, adult, child, senior,false, chosenOrder);
                                         }
                                     }
 
@@ -619,7 +618,7 @@ int main()
                                 if (theater3.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    theater3.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
+                                    theater3.reserveSeats(row - 1, column, adult, child, senior, false, chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -637,7 +636,7 @@ int main()
                                         cout << "Those seats are not open. The next best seats are ";
                                         //output next best
                                         for (int i = 0; i < quantity; i++)
-                                            cout << best.first << indexToColumn(best.second + i) << ", ";
+                                            cout << best.first + 1 << indexToColumn(best.second + i) << ", ";
                                         cout << "\n\n";
 
 
@@ -655,7 +654,7 @@ int main()
                                         //user wants to reserve
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            theater3.reserveSeats(best.first, best.second, adult, child, senior, false, &chosenOrder);
+                                            theater3.reserveSeats(best.first, best.second, adult, child, senior, false, chosenOrder);
                                         }
 
                                     }
@@ -681,7 +680,7 @@ int main()
                             getline(cin, r);
 
 
-                            vector<Seat> seatsInOrder = chosenOrder.getSeats();
+                            vector<Seat> seatsInOrder = chosenOrder->getSeats();
                             //check to see if row input is actually in order
                             bool found = false;
                             int foundIndex = 0;
@@ -725,6 +724,7 @@ int main()
                             {
                                 if ((seatsInOrder[i].getColumn() == c[0] && seatsInOrder[i].getRow() == row) && c.length() == 1)
                                 {
+                                    foundIndex = i;
                                     found = true;
                                     break;
                                 }
@@ -740,6 +740,7 @@ int main()
                                 {
                                     if (seatsInOrder[i].getColumn() == c[0] && c.length() == 1)
                                     {
+                                        foundIndex = i;
                                         found = true;
                                         break;
                                     }
@@ -749,7 +750,7 @@ int main()
 
 
                             //mark the tickets as available
-                            int orderAud = chosenOrder.getAuditorium();
+                            int orderAud = chosenOrder->getAuditorium();
                             if (orderAud == 1)
                                 theater1.setEmpty(row, column, 1);
                             else if (orderAud == 2)
@@ -758,15 +759,15 @@ int main()
                                 theater3.setEmpty(row, column, 1);
 
                             //delete from the order
-                            chosenOrder.removeSeat(foundIndex);
+                            chosenOrder->removeSeat(foundIndex);
 
                         }
                         else if (orderMM == "3")    //Cancel order
                         {
                             //unreserve all seats in order, delete the order from the vector of orders
-                            vector<Seat> seatsInOrder = chosenOrder.getSeats();
+                            vector<Seat> seatsInOrder = chosenOrder->getSeats();
 
-                            int orderAud = chosenOrder.getAuditorium();
+                            int orderAud = chosenOrder->getAuditorium();
 
                             //loop through seats and unreserve
                             for (int i = 0; i < (int) seatsInOrder.size(); i++)
