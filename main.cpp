@@ -16,11 +16,11 @@
 
 using namespace std;
 
-void writeTableToFile(unordered_map<string, Customer>);
+void writeTableToFile(unordered_map<string, Customer*>);
 void displayReport(Auditorium, Auditorium, Auditorium);
 int columnToIndex(char);
 char indexToColumn(int);
-unordered_map<string, Customer> readTable();
+unordered_map<string, Customer*> readTable();
 vector<string> separateString(string);
 
 
@@ -33,7 +33,7 @@ int main()
     Auditorium theater2("A2.txt", 2);
     Auditorium theater3("A3.txt", 3);
     //create new table by reading it in.
-    unordered_map<string, Customer> table = readTable();
+    unordered_map<string, Customer*> table = readTable();
 
 
     //input validation
@@ -62,7 +62,7 @@ int main()
 
 
         //after three guesse it goes to the beginning
-        while (table.find(usernameIn)->second.getPassword() != passwordIn && guesses != 3)
+        while (table.find(usernameIn)->second->getPassword() != passwordIn && guesses != 3)
         {
             cout << "Incorrect Password. Please Try again:\n";
             getline(cin, passwordIn);
@@ -101,7 +101,7 @@ int main()
                 {
                     theater1.writeToFile("A1.txt");
                     theater2.writeToFile("A2.txt");
-                    theater2.writeToFile("A3.txt");
+                    theater3.writeToFile("A3.txt");
                     exit(0);
                 }
             }
@@ -235,8 +235,8 @@ int main()
                         if (theater1.isAvailable(row - 1, column, quantity))
                         {
                             //then reserve those seats.
-                            Customer current = table.find(usernameIn)->second;
-                            theater1.reserveSeats(row - 1, column, adult, senior, child, true, current);
+                            Customer *current = table.find(usernameIn)->second;
+                            theater1.reserveSeats(row - 1, column, adult, child, senior, true, current);
                             cout << "\nSeats have been reserved!\n";
                         }
                         else
@@ -271,7 +271,7 @@ int main()
 
                                 if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                 {
-                                    Customer current = table.find(usernameIn)->second;
+                                    Customer *current = table.find(usernameIn)->second;
                                     theater1.reserveSeats(best.first, best.second, adult, child, senior, true, current);
                                 }
 
@@ -284,8 +284,8 @@ int main()
                         if (theater2.isAvailable(row - 1, column, quantity))
                         {
                             //then reserve those seats.
-                            Customer current = table.find(usernameIn)->second;
-                            theater2.reserveSeats(row - 1, column, adult, senior, child, true, current);
+                            Customer *current = table.find(usernameIn)->second;
+                            theater2.reserveSeats(row - 1, column, adult, child, senior, true, current);
 
                             cout << "\nSeats have been reserved!\n";
                         }
@@ -322,7 +322,7 @@ int main()
                                 //if customer does want to reserve
                                 if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                 {
-                                    Customer current = table.find(usernameIn)->second;
+                                    Customer *current = table.find(usernameIn)->second;
                                     theater2.reserveSeats(best.first, best.second, adult, child, senior, true, current);
                                 }
                             }
@@ -334,8 +334,8 @@ int main()
                         if (theater3.isAvailable(row - 1, column, quantity))
                         {
                             //then reserve those seats.
-                            Customer current = table.find(usernameIn)->second;
-                            theater3.reserveSeats(row - 1, column, adult, senior, child, true, current);
+                            Customer *current = table.find(usernameIn)->second;
+                            theater3.reserveSeats(row - 1, column, adult, child, senior, true, current);
                             cout << "\nSeats have been reserved!\n";
                         }
                         else
@@ -370,7 +370,7 @@ int main()
 
                                 if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                 {
-                                    Customer current = table.find(usernameIn)->second;
+                                    Customer *current = table.find(usernameIn)->second;
                                     theater3.reserveSeats(best.first, best.second, adult, child, senior, true, current);
                                 }
 
@@ -385,24 +385,24 @@ int main()
                 //view orders
                 else if (regularMM == "2")
                 {
-                    table.find(usernameIn)->second.viewOrders();
+                    table.find(usernameIn)->second->viewOrders();
                 }
                 //updateOrders
                 else if (regularMM == "3")
                 {
                     string updateIn;
-                    table.find(usernameIn)->second.viewOrders();
+                    table.find(usernameIn)->second->viewOrders();
 
-                    if (table.find(usernameIn)->second.getOrders().size() > 0)
+                    if (table.find(usernameIn)->second->getOrders().size() > 0)
                     {
                         cout << "Enter the order to be updated: \n";
                         getline(cin, updateIn);
 
                         //vector of users orders
-                        vector<Order> orders = table.find(usernameIn)->second.getOrders();
+                        vector<Order> orders = table.find(usernameIn)->second->getOrders();
 
                         //input validation
-                        while (updateIn.find_first_not_of("0123456789") != string::npos || atoi(updateIn.c_str()) > (int) table.find(usernameIn)->second.getOrders().size() - 1 || atoi(updateIn.c_str()) <= 0)
+                        while (updateIn.find_first_not_of("0123456789") != string::npos || atoi(updateIn.c_str()) > (int) table.find(usernameIn)->second->getOrders().size() || atoi(updateIn.c_str()) <= 0)
                         {
                             cout << "Invalid input, please try again: \n";
                             getline(cin, updateIn);
@@ -526,8 +526,7 @@ int main()
                                 if (theater1.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    Customer current = table.find(usernameIn)->second;
-                                    theater1.reserveSeats(row - 1, column, adult, senior, child, false, chosenOrder);
+                                    theater1.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -562,8 +561,7 @@ int main()
 
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            Customer current = table.find(usernameIn)->second;
-                                            theater1.reserveSeats(best.first, best.second, adult, child, senior, false, chosenOrder);
+                                            theater1.reserveSeats(best.first, best.second, adult, child, senior, false, &chosenOrder);
                                         }
 
                                     }
@@ -575,8 +573,7 @@ int main()
                                 if (theater2.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    Customer current = table.find(usernameIn)->second;
-                                    theater2.reserveSeats(row - 1, column, adult, senior, child, false, chosenOrder);
+                                    theater2.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -611,8 +608,7 @@ int main()
 
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            Customer current = table.find(usernameIn)->second;
-                                            theater2.reserveSeats(best.first, best.second, adult, child, senior,false, chosenOrder);
+                                            theater2.reserveSeats(best.first, best.second, adult, child, senior,false, &chosenOrder);
                                         }
                                     }
 
@@ -623,8 +619,7 @@ int main()
                                 if (theater3.isAvailable(row - 1, column, quantity))
                                 {
                                     //then reserve those seats.
-                                    Customer current = table.find(usernameIn)->second;
-                                    theater3.reserveSeats(row - 1, column, adult, senior, child, false, chosenOrder);
+                                    theater3.reserveSeats(row - 1, column, adult, child, senior, false, &chosenOrder);
                                     cout << "\nSeats have been reserved!\n";
                                 }
                                 else
@@ -660,8 +655,7 @@ int main()
                                         //user wants to reserve
                                         if (reserveConfirmation == "Y" || reserveConfirmation == "y")
                                         {
-                                            Customer current = table.find(usernameIn)->second;
-                                            theater3.reserveSeats(best.first, best.second, adult, child, senior, false, chosenOrder);
+                                            theater3.reserveSeats(best.first, best.second, adult, child, senior, false, &chosenOrder);
                                         }
 
                                     }
@@ -788,7 +782,7 @@ int main()
 
 
                             //delete the order from the orders
-                            table.find(usernameIn)->second.removeOrder(userInt - 1);
+                            table.find(usernameIn)->second->removeOrder(userInt - 1);
                             cout << "\nOrder cancelled\n";
                         }
                     }
@@ -796,7 +790,7 @@ int main()
                 //display Receipt
                 else if (regularMM == "4")
                 {
-                    table.find(usernameIn)->second.printReciept();
+                    table.find(usernameIn)->second->printReciept();
 
                     //loop through and print the orders
                 }
@@ -825,7 +819,7 @@ int main()
 //--------------------------------samples-------------------------
     cout << "\n\n--------------------samples-------------------------\n";
     //demonstrate that table has been filled in
-    cout << table.find("usah")->second.getPassword() << endl;
+    cout << table.find("usah")->second->getPassword() << endl;
 
 
     //print the auditorium
@@ -878,18 +872,18 @@ vector<string> separateString(string str)
 }
 
 //reads in the table to the hashTable
-unordered_map<string, Customer> readTable()
+unordered_map<string, Customer*> readTable()
 {
     ifstream inFile("userdb.dat");
     string line;
-    unordered_map<string, Customer> table;
+    unordered_map<string, Customer*> table;
 
 
 
     while (getline(inFile, line))
     {
         vector<string> temp = separateString(line);
-        Customer newCus(temp[0], temp[1]);
+        Customer *newCus = new Customer(temp[0], temp[1]);
         table.emplace(temp[0], newCus);
     }
 
@@ -946,9 +940,9 @@ void displayReport(Auditorium one, Auditorium two, Auditorium three)
 
 }
 
-void writeTableToFile(unordered_map<string, Customer> table)
+void writeTableToFile(unordered_map<string, Customer*> table)
 {
     ofstream outFile("userdb.dat");
     for (auto x : table)
-        outFile << x.first << " " << x.second.getPassword() << endl;
+        outFile << x.first << " " << x.second->getPassword() << endl;
 }

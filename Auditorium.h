@@ -36,8 +36,8 @@ public:
     void printAuditorium();
     void writeToFile(std::string);
     bool isAvailable(int, int, int);
-    void reserveSeats(int, int, int, int, int, bool, Customer);
-    void reserveSeats(int, int, int, int, int, bool, Order);
+    void reserveSeats(int, int, int, int, int, bool, Customer*);
+    void reserveSeats(int, int, int, int, int, bool, Order*);
     void setEmpty(int, int, int);
     std::vector<int> printReport();
     std::pair<int, int> bestAvailable(int);

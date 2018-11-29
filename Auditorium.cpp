@@ -110,8 +110,11 @@ bool Auditorium::isAvailable(int r, int c, int q)
     return true;
 }
 
-void Auditorium::reserveSeats(int row, int column, int adult, int child, int senior, bool newOrder, Customer current)
+void Auditorium::reserveSeats(int row, int column, int a, int c, int s, bool newOrder, Customer *current)
 {
+    int adult = a;
+    int child = c;
+    int senior = s;
     //edit 2d array
     //runs
     //total amount of ticket bough
@@ -169,7 +172,8 @@ void Auditorium::reserveSeats(int row, int column, int adult, int child, int sen
                 orderCreated.addSeat(newSeat);
             }
         }
-        current.addOrder(orderCreated);
+        current->addOrder(orderCreated);
+
     }
     if (!newOrder)
     {
@@ -182,8 +186,11 @@ void Auditorium::reserveSeats(int row, int column, int adult, int child, int sen
 
 
 //if it's not a new order you are adding tickets to an old order. We need to be passed the order as well
-void Auditorium::reserveSeats(int row, int column, int adult, int child, int senior, bool newOrder, Order order)
+void Auditorium::reserveSeats(int row, int column, int a, int c, int s, bool newOrder, Order *order)
 {
+    int adult = a;
+    int child = c;
+    int senior = s;
     //edit 2d array
     //runs
     //total amount of ticket bough
@@ -227,19 +234,19 @@ void Auditorium::reserveSeats(int row, int column, int adult, int child, int sen
             {
                 Seat newSeat('A', row, alphabet[column + i]);
                 adult--;
-                order.addSeat(newSeat);
+                order->addSeat(newSeat);
             }
             else if (child > 0)
             {
                 Seat newSeat('C', row, alphabet[column + i]);
                 child--;
-                order.addSeat(newSeat);
+                order->addSeat(newSeat);
             }
             else
             {
                 Seat newSeat('S', row, alphabet[column + i]);
                 senior--;
-                order.addSeat(newSeat);
+                order->addSeat(newSeat);
             }
 
         }
