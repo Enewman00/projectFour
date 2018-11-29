@@ -16,6 +16,7 @@
 
 using namespace std;
 
+//prototypes
 void writeTableToFile(unordered_map<string, Customer*>);
 void displayReport(Auditorium, Auditorium, Auditorium);
 int columnToIndex(char);
@@ -182,7 +183,7 @@ int main()
                     transform(c.begin(), c.end(), c.begin(), ::toupper);
 
                     //input validation loop
-                    while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0)
+                    while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0 || c.length() > 1)
                     {
                         cout << "Sorry, seat does not exist. Please try input again.\n";
                         getline(cin, c);
@@ -474,7 +475,7 @@ int main()
                             transform(c.begin(), c.end(), c.begin(), ::toupper);
 
                             //input validation loop
-                            while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0)
+                            while (columnToIndex(c[0]) >= columns || (int) columnToIndex(c[0]) < 0 || c.length() > 1)
                             {
                                 cout << "Sorry, seat does not exist. Please try input again.\n";
                                 getline(cin, c);
@@ -807,38 +808,6 @@ int main()
 
 
 
-
-
-
-
-
-
-
-
-
-
-//--------------------------------samples-------------------------
-    cout << "\n\n--------------------samples-------------------------\n";
-    //demonstrate that table has been filled in
-    cout << table.find("usah")->second->getPassword() << endl;
-
-
-    //print the auditorium
-    cout << "auditorium 1: " << endl;
-    theater1.printAuditorium();
-
-    //show the report
-    displayReport(theater1, theater2, theater3);
-
-
-    //best avaialable
-    cout << "bestAvailable: " << theater1.bestAvailable(4).first + 1 << indexToColumn(theater1.bestAvailable(4).second) << endl;
-
-    //write all of it to their files
-    theater1.writeToFile("A1.txt");
-    theater2.writeToFile("A2.txt");
-    theater2.writeToFile("A3.txt");
-    //writeTableToFile(table);
 
     return 0;
 }

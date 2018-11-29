@@ -337,7 +337,7 @@ std::vector<int> Auditorium::printReport()
 std::pair<int, int> Auditorium::bestAvailable(int customerQuantity)
 {
     std :: string alphabet  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //used to locate column
-    int distance            = rows + columns;
+    float distance            = (float)(rows + columns);
     bool available          = true;
     std::pair<int, int> startingSeat(-1, -1); //the seat it returns
 
@@ -361,15 +361,15 @@ std::pair<int, int> Auditorium::bestAvailable(int customerQuantity)
             //if those seats are available
             if (available)
             {
-                int columnDistance = abs( ((int) alphabet.find(auditorium[r][c]) + ((customerQuantity - 1)/2)) - ((columns - 1)/2)  ); //distance of middle seat from the center of row
-                int rowDistance    = abs(r - ((rows - 1)/2));   //distance from the center row
-                int totalDistance  = rowDistance + columnDistance;
+                float columnDistance = (float) abs((c + ((customerQuantity - 1)/2)) - ((columns - 1)/2)); //distance of middle seat from the center of row
+                float rowDistance    = (float) abs(r - ((rows - 1)/2));   //distance from the center row
+                float totalDistance  = rowDistance + columnDistance;
 
 
                 if (totalDistance == distance)  //if a tiebreaker is needed
                 {
                     //distance of the previous startingSeat to the middle row
-                    int prevDistance = abs(startingSeat.first - (rows - 1)/2);
+                    float prevDistance = (float) abs(startingSeat.first - (rows - 1)/2);
 
                     //if the distance to the center row doesn't break the tie
                     if (rowDistance == prevDistance)
